@@ -1,6 +1,7 @@
 #ifndef TODOITEM_H
 #define TODOITEM_H
 
+#include <QString>
 #include <QWidget>
 
 namespace Ui {
@@ -14,6 +15,8 @@ class TodoItem : public QWidget
 public:
    explicit TodoItem(QWidget *parent = nullptr);
    ~TodoItem();
+
+   void setDescription(const QString& description);
 
 private:
    Ui::TodoItem *ui;

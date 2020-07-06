@@ -12,3 +12,8 @@ TodoItem::~TodoItem()
 {
    delete ui;
 }
+
+void TodoItem::setDescription(const QString& description)
+{
+   ui->todoDescriptionLabel->setText(description);
+}

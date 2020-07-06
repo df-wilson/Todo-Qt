@@ -15,6 +15,11 @@ public:
    explicit NewTodoDialog(QWidget *parent = nullptr);
    ~NewTodoDialog();
 
+private slots:
+   void on_addButton_clicked();
+
+   void on_doneButton_clicked();
+
 private:
    Ui::NewTodoDialog *ui;
 };
