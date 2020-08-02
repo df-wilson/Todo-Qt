@@ -19,12 +19,14 @@ SOURCES += \
     dbmanager.cpp \
     main.cpp \
     mainwindow.cpp \
-    newtododialog.cpp
+    newtododialog.cpp \
+    todoframe.cpp
 
 HEADERS += \
     dbmanager.h \
     mainwindow.h \
-    newtododialog.h
+    newtododialog.h \
+    todoframe.h
 
 FORMS += \
     mainwindow.ui \
@@ -37,3 +39,6 @@ TRANSLATIONS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    database.sql

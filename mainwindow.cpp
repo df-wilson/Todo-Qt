@@ -10,7 +10,9 @@
 #include <QScrollArea>
 #include <QPlainTextEdit>
 
+#include <iostream>
 #include <vector>
+
 
 MainWindow::MainWindow(QWidget *parent)
    : QMainWindow(parent)
@@ -37,10 +39,24 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-   if(ui)
+   QLayoutItem *child;
+    while ((child = mMainFrame->layout()->takeAt(0)) != 0)
+    {
+       delete child;
+       child = nullptr;
+    }
+
+    if(mMainFrame->layout())
+    {
+       delete mMainFrame->layout();
+    }
+
+   mTodoFrames.clear();
+
+   if(mMainFrame)
    {
-      delete ui;
-      ui = nullptr;
+      delete mMainFrame;
+      mMainFrame = nullptr;
    }
 
    if(mScrollArea)
@@ -50,10 +66,10 @@ MainWindow::~MainWindow()
       mScrollArea = nullptr;
    }
 
-   if(mMainFrame)
+   if(ui)
    {
-      delete mMainFrame;
-      mMainFrame = nullptr;
+      delete ui;
+      ui = nullptr;
    }
 
    if(mDbManager)
@@ -67,12 +83,23 @@ MainWindow::~MainWindow()
 void MainWindow::on_newButton_clicked()
 {
     NewTodoDialog dialog(this);
-    dialog.exec();
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        std::cout << "In on_newButton_clicked" << std::endl;
+        showAllTodos();
+    }
 }
 
 void MainWindow::on_showDone_stateChanged(int arg1)
 {
 
+}
+
+QFrame *MainWindow::createNewTodoFrame(const DbManager::TodoItemData &todo)
+{
+   mTodoFrames.push_back(std::unique_ptr<TodoFrame>(new TodoFrame(todo)));
+
+   return mTodoFrames.back()->getFrame();
 }
 
 void MainWindow::showActiveTodos()
@@ -86,127 +113,45 @@ void MainWindow::showAllTodos()
 
    if(mDbManager->isOpen())
    {
-      todos = mDbManager->allTodos();
+   std::cout << "In showAllTodos. Database open.";
    }
    else
    {
-      qDebug() << "Error opening database.";
+      std::cout << "In showAllTodos. Error opening database.";
    }
 
+   todos = mDbManager->allTodos();
    drawSelectedTodos(todos);
 }
 
+/*---------------------------------------------------------------------------
+*/
 void MainWindow::drawSelectedTodos(std::vector<DbManager::TodoItemData>& todos)
 {
+   size_t numTodoFrames = mMainFrame->layout()->count();
+   QWidget* todoFrame = nullptr;
 
+   size_t todoCount = 0;
    for (auto& todo : todos)
    {
-       QFrame* todoFrame = new QFrame();
-       QPlainTextEdit* description = new QPlainTextEdit(todo.description);
-       description->setReadOnly(true);
+      if(numTodoFrames <= todoCount)
+      {
+          todoFrame = createNewTodoFrame(todo);
+          mMainFrame->layout()->addWidget(todoFrame);
+      }
+      else
+      {
+         mTodoFrames[todoCount]->setDescription(todo.description);
+         mTodoFrames[todoCount]->setPriority(todo.priority);
+         mTodoFrames[todoCount]->setStatus(todo.status);
+         mTodoFrames[todoCount]->setVisible(true);
+      }
 
-       QLabel* priorityLabel = new QLabel("Priority:");
-       QLabel* statusLabel = new QLabel("Status:");
-       QLabel* dueLabel = new QLabel("Due At:");
-
-       // Create todo description
-       description->setStyleSheet("background-color: white;");
-       description->setStyleSheet("font: 18pt");
-
-       // Create priority combo box
-      QComboBox* priorityComboBox = new QComboBox;
-      priorityComboBox->addItem("High");
-      priorityComboBox->addItem("Medium");
-      priorityComboBox->addItem("Low");
-      priorityComboBox->setCurrentIndex(priorityStringToIndex(todo.priority));
-
-      // Create priority combo box
-      QComboBox* statusComboBox = new QComboBox;
-      statusComboBox->addItem("Not Started");
-      statusComboBox->addItem("In Progress");
-      statusComboBox->addItem("Completed");
-      statusComboBox->setCurrentIndex(statusStringToIndex(todo.status));
-
-      // Create date widget
-      QDate dueDateAt = QDate::fromString(todo.dueDate, "yyyy-MM-dd");
-      QDateEdit* dateEdit = new QDateEdit(dueDateAt);
-      QPushButton* deleteButton = new QPushButton("X");
-      deleteButton->setStyleSheet("background-color: red");
-
-      // Set up the layout.
-       QVBoxLayout* todoFrameLayout = new QVBoxLayout();
-       QHBoxLayout* descriptionLayout = new QHBoxLayout();
-       QHBoxLayout* optionsLayout = new QHBoxLayout();
-       QHBoxLayout* dateDueLayout = new QHBoxLayout();
-
-       todoFrameLayout->addLayout(descriptionLayout);
-       todoFrameLayout->addLayout(optionsLayout);
-       todoFrameLayout->addLayout(dateDueLayout);
-
-       todoFrame->setLayout(todoFrameLayout);
-       todoFrame->setFrameShape(QFrame::Panel);
-
-       descriptionLayout->addWidget(description);
-
-       optionsLayout->addWidget(priorityLabel);
-       optionsLayout->addWidget(priorityComboBox);
-       optionsLayout->addWidget(statusLabel);
-       optionsLayout->addWidget(statusComboBox);
-       optionsLayout->addStretch();
-
-       dateDueLayout->addWidget(dueLabel);
-       dateDueLayout->addWidget(dateEdit);
-       dateDueLayout->addStretch();
-       dateDueLayout->addWidget(deleteButton);
-
-       mMainFrame->layout()->addWidget(todoFrame);
+      todoCount++;
    }
-}
 
-int MainWindow::priorityStringToIndex(QString item)
-{
-   int index = 0;
-
-   if(item == "High")
+   for(unsigned int i = todoCount; i < numTodoFrames; ++i)
    {
-      index = 0;
+      mTodoFrames[i]->setVisible(false);
    }
-   else if(item == "Medium")
-   {
-      index = 1;
-   }
-   else if(item == "Low")
-   {
-      index = 2;
-   }
-   else
-   {
-      // Error
-   }
-
-   return index;
-}
-
-int MainWindow::statusStringToIndex(QString item)
-{
-   int index = 0;
-
-   if(item == "Not Started")
-   {
-      index = 0;
-   }
-   else if(item == "In Progress")
-   {
-      index = 1;
-   }
-   else if(item == "Completed")
-   {
-      index = 2;
-   }
-   else
-   {
-      // Error
-   }
-
-   return index;
 }

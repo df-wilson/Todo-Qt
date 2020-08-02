@@ -34,11 +34,11 @@ bool DbManager::addTodoItem(const QString &text, QString &priority, QString &sta
    bool success = false;
 
    QSqlQuery query;
-   query.prepare("INSERT INTO todos (description, priority, status, due_at) VALUES (:text, :priority, :status, :date");
-   query.bindValue(":description,", text);
-   query.bindValue(":priority,", priority);
-   query.bindValue(":status,", status);
-   query.bindValue(":due_at,", date);
+   query.prepare("INSERT INTO todos (description, priority, status, due_at, created_at, updated_at) VALUES (:description, :priority, :status, :due_at, DateTime('now'), DateTime('now'))");
+   query.bindValue(":description", text);
+   query.bindValue(":priority", priority);
+   query.bindValue(":status", status);
+   query.bindValue(":due_at", date);
 
    if(query.exec())
    {
@@ -46,6 +46,7 @@ bool DbManager::addTodoItem(const QString &text, QString &priority, QString &sta
    }
    else
    {
+      QString error = query.lastError().text();
       qDebug() << "addTodo error:"
                << query.lastError();
    }

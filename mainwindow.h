@@ -2,10 +2,13 @@
 #define MAINWINDOW_H
 
 #include "dbmanager.h"
+#include "todoframe.h"
 
 #include <QFrame>
 #include <QMainWindow>
 #include <QScrollArea>
+
+#include <vector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,10 +34,11 @@ private:
    const QString mPath = "./database/database.sqlite";
    DbManager *mDbManager;
 
+   std::vector<std::unique_ptr<TodoFrame>> mTodoFrames;
+
+   QFrame *createNewTodoFrame(const DbManager::TodoItemData& data);
    void showActiveTodos();
    void showAllTodos();
    void drawSelectedTodos(std::vector<DbManager::TodoItemData>& todos);
-   int priorityStringToIndex(QString item);
-   int statusStringToIndex(QString item);
 };
 #endif // MAINWINDOW_H
