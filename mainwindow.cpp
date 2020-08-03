@@ -141,6 +141,7 @@ void MainWindow::drawSelectedTodos(std::vector<DbManager::TodoItemData>& todos)
       }
       else
       {
+         mTodoFrames[todoCount]->setId(todo.id);
          mTodoFrames[todoCount]->setDescription(todo.description);
          mTodoFrames[todoCount]->setPriority(todo.priority);
          mTodoFrames[todoCount]->setStatus(todo.status);

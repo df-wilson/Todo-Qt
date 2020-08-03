@@ -16,6 +16,8 @@ TodoFrame::TodoFrame(const DbManager::TodoItemData &todo)
 {
    mTodoFrame = new QFrame();
 
+   mId = todo.id;
+
    // Create todo description
    mDescription = new QPlainTextEdit(todo.description);
    mDescription->setReadOnly(true);
@@ -32,13 +34,15 @@ TodoFrame::TodoFrame(const DbManager::TodoItemData &todo)
   mPriorityComboBox->addItem("Medium");
   mPriorityComboBox->addItem("Low");
   mPriorityComboBox->setCurrentIndex(priorityStringToIndex(todo.priority));
+  connect(mPriorityComboBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString& index){ handlePriorityIndexChanged(index); });
 
-  // Create priority combo box
+  // Create status combo box
   mStatusComboBox = new QComboBox;
   mStatusComboBox->addItem("Not Started");
   mStatusComboBox->addItem("In Progress");
   mStatusComboBox->addItem("Completed");
   mStatusComboBox->setCurrentIndex(statusStringToIndex(todo.status));
+  connect(mStatusComboBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString& index){ handleStatusIndexChanged(index); });
 
   // Create date widget
   QDate dueDateAt = QDate::fromString(todo.dueDate, "yyyy-MM-dd");
@@ -72,6 +76,8 @@ TodoFrame::TodoFrame(const DbManager::TodoItemData &todo)
    mDateDueLayout->addWidget(mDateEdit);
    mDateDueLayout->addStretch();
    mDateDueLayout->addWidget(mDeleteButton);
+
+   mDbManager = new DbManager(mPath);
 }
 
 /*---------------------------------------------------------------------------
@@ -97,6 +103,8 @@ TodoFrame::~TodoFrame()
    delete mTodoFrameLayout;
 
    delete mTodoFrame;
+
+   delete mDbManager;
 }
 
 /*---------------------------------------------------------------------------
@@ -104,6 +112,13 @@ TodoFrame::~TodoFrame()
 QFrame* TodoFrame::getFrame()
 {
    return mTodoFrame;
+}
+
+/*---------------------------------------------------------------------------
+*/
+void TodoFrame::setId(unsigned int id)
+{
+   mId = id;
 }
 
 /*---------------------------------------------------------------------------
@@ -132,6 +147,32 @@ void TodoFrame::setPriority(QString priority)
 void TodoFrame::setStatus(QString status)
 {
    mStatusComboBox->setCurrentIndex(statusStringToIndex(status));
+}
+
+
+/*---------  Private Methods  -----------------*/
+
+/*---------------------------------------------------------------------------
+*/
+void TodoFrame::handleDeleteButtonClicked()
+{
+   QMessageBox msgBox;
+   msgBox.setText("Button clicked.");
+   msgBox.exec();
+}
+
+/*---------------------------------------------------------------------------
+*/
+void TodoFrame::handlePriorityIndexChanged(const QString &value)
+{
+   mDbManager->updatePriority(mId, value);
+}
+
+/*---------------------------------------------------------------------------
+*/
+void TodoFrame::handleStatusIndexChanged(const QString &value)
+{
+   mDbManager->updateStatus(mId, value);
 }
 
 /*---------------------------------------------------------------------------
@@ -185,13 +226,3 @@ int TodoFrame::statusStringToIndex(QString item)
 
    return index;
 }
-
-/*---------------------------------------------------------------------------
-*/
-void TodoFrame::handleDeleteButtonClicked()
-{
-   QMessageBox msgBox;
-   msgBox.setText("Button clicked.");
-   msgBox.exec();
-}
-

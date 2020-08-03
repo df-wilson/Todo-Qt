@@ -33,6 +33,7 @@ public:
    virtual ~TodoFrame();
 
    QFrame* getFrame();
+   void setId(unsigned int id);
    void setVisible(bool isVisible);
    void setDescription(QString description);
    void setPriority(QString priority);
@@ -52,6 +53,7 @@ private:
    QLabel* mStatusLabel;
    QLabel* mDueLabel;
 
+   unsigned int mId;
    QPlainTextEdit* mDescription;
    QComboBox* mPriorityComboBox;
    QComboBox* mStatusComboBox;
@@ -59,11 +61,16 @@ private:
 
    QPushButton* mDeleteButton;
 
+   const QString mPath = "./database/database.sqlite";
+   DbManager* mDbManager;
+
 
    /*---------  Private Methods  -----------------*/
 
    int priorityStringToIndex(QString item);
    int statusStringToIndex(QString item);
+   void handlePriorityIndexChanged(const QString& value);
+   void handleStatusIndexChanged(const QString& value);
 
 private slots:
    void handleDeleteButtonClicked();

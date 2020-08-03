@@ -10,6 +10,7 @@ class DbManager
 public:
    struct TodoItemData
    {
+      unsigned int id;
       QString description;
       QString priority;
       QString status;
@@ -22,6 +23,9 @@ public:
    bool addTodoItem(const QString& text, QString& priority, QString& status, QString date);
    std::vector<TodoItemData> activeTodos();
    std::vector<TodoItemData> allTodos();
+   bool updatePriority(int todoId, const QString& priority);
+   bool updateStatus(int todoId, const QString& status);
+
    bool isOpen() const;
 
 private:

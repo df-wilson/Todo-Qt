@@ -54,11 +54,14 @@ bool DbManager::addTodoItem(const QString &text, QString &priority, QString &sta
    return success;
 }
 
+
+
 std::vector<DbManager::TodoItemData> DbManager::activeTodos()
 {
    std::vector<DbManager::TodoItemData> todos;
 
    QSqlQuery query("SELECT * FROM todos WHERE status = 'In Progress' OR status = 'Not Started'");
+   int idId = query.record().indexOf("id");
    int idDescription = query.record().indexOf("description");
    int idDueAt = query.record().indexOf("due_at");
    int idPriority = query.record().indexOf("priority");
@@ -67,6 +70,7 @@ std::vector<DbManager::TodoItemData> DbManager::activeTodos()
    while(query.next())
    {
       DbManager::TodoItemData data;
+      data.id = query.value(idId).toUInt();
       data.description = query.value(idDescription).toString();
       data.dueDate = query.value(idDueAt).toString();
       data.priority = query.value(idPriority).toString();
@@ -83,6 +87,7 @@ std::vector<DbManager::TodoItemData> DbManager::allTodos()
    std::vector<DbManager::TodoItemData> todos;
 
    QSqlQuery query("SELECT * FROM todos");
+   int idId = query.record().indexOf("id");
    int idDescription = query.record().indexOf("description");
    int idDueAt = query.record().indexOf("due_at");
    int idPriority = query.record().indexOf("priority");
@@ -91,6 +96,7 @@ std::vector<DbManager::TodoItemData> DbManager::allTodos()
    while(query.next())
    {
       DbManager::TodoItemData data;
+      data.id = query.value(idId).toUInt();
       data.description = query.value(idDescription).toString();
       data.dueDate = query.value(idDueAt).toString();
       data.priority = query.value(idPriority).toString();
@@ -100,6 +106,56 @@ std::vector<DbManager::TodoItemData> DbManager::allTodos()
    }
 
    return todos;
+}
+
+/*---------------------------------------------------------------------------
+*/
+bool DbManager::updatePriority(int todoId, const QString &priority)
+{
+   bool success = false;
+
+   QSqlQuery query;
+   query.prepare("UPDATE todos SET priority = :priority WHERE id = :todoId");
+   query.bindValue(":priority", priority);
+   query.bindValue(":todoId", todoId);
+
+   if(query.exec())
+   {
+      success = true;
+   }
+   else
+   {
+      QString error = query.lastError().text();
+      qDebug() << "updatePriority error:"
+               << query.lastError();
+   }
+
+   return success;
+}
+
+/*---------------------------------------------------------------------------
+*/
+bool DbManager::updateStatus(int todoId, const QString &status)
+{
+   bool success = false;
+
+   QSqlQuery query;
+   query.prepare("UPDATE todos SET status = :status WHERE id = :todoId");
+   query.bindValue(":status", status);
+   query.bindValue(":todoId", todoId);
+
+   if(query.exec())
+   {
+      success = true;
+   }
+   else
+   {
+      QString error = query.lastError().text();
+      qDebug() << "updateStatus error:"
+               << query.lastError();
+   }
+
+   return success;
 }
 
 bool DbManager::isOpen() const
