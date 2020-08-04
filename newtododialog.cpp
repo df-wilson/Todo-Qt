@@ -10,6 +10,8 @@ NewTodoDialog::NewTodoDialog(QWidget *parent) :
    ui(new Ui::NewTodoDialog)
 {
    ui->setupUi(this);
+   ui->dueDateEdit->setDate(QDate::currentDate());
+
    mDbManager = new DbManager(mPath);
 }
 
@@ -32,6 +34,7 @@ void NewTodoDialog::on_addButton_clicked()
    ui->plainTextEdit->document()->setPlainText("");
    ui->priorityComboBox->setCurrentIndex(0);
    ui->statusComboBox->setCurrentIndex(0);
+   ui->dueDateEdit->setDate(QDate::currentDate());
 }
 
 void NewTodoDialog::on_doneButton_clicked()
