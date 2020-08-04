@@ -156,9 +156,22 @@ void TodoFrame::setStatus(QString status)
 */
 void TodoFrame::handleDeleteButtonClicked()
 {
-   QMessageBox msgBox;
-   msgBox.setText("Button clicked.");
-   msgBox.exec();
+   if(mDbManager->deleteTodo(mId))
+   {
+      mId = 0;
+      mDescription->setPlainText("");
+      mPriorityComboBox->setCurrentIndex(-1);
+      mStatusComboBox->setCurrentIndex(-1);
+      mDateEdit->setDate(QDate::currentDate());
+
+      setVisible(false);
+   }
+   else
+   {
+      QMessageBox msgBox;
+      msgBox.setText("Error deleting todo.");
+      msgBox.exec();
+   }
 }
 
 /*---------------------------------------------------------------------------

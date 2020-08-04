@@ -110,6 +110,30 @@ std::vector<DbManager::TodoItemData> DbManager::allTodos()
 
 /*---------------------------------------------------------------------------
 */
+bool DbManager::deleteTodo(int todoId)
+{
+   bool success = false;
+
+   QSqlQuery query;
+   query.prepare("DELETE FROM todos WHERE id = :id");
+   query.bindValue(":id", todoId);
+
+   if(query.exec())
+   {
+      success = true;
+   }
+   else
+   {
+      QString error = query.lastError().text();
+      qDebug() << "updatePriority error:"
+               << error;
+   }
+
+   return success;
+}
+
+/*---------------------------------------------------------------------------
+*/
 bool DbManager::updatePriority(int todoId, const QString &priority)
 {
    bool success = false;
