@@ -1,9 +1,12 @@
 #ifndef DBMANAGER_H
 #define DBMANAGER_H
 
+/*---------  System Includes  -----------------*/
 #include <QDebug>
 #include <QSqlDatabase>
 #include <QString>
+
+/*---------  Class Definition  ----------------*/
 
 class DbManager
 {
@@ -16,6 +19,8 @@ public:
       QString status;
       QString dueDate;
    };
+
+   /*---------  Public Methods  ------------------*/
 
    DbManager(const QString& path);
    virtual ~DbManager();
@@ -30,6 +35,8 @@ public:
    bool isOpen() const;
 
 private:
+
+   /*---------  Private Data  --------------------*/
    QSqlDatabase mDb;
 };
 

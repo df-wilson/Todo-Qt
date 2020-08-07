@@ -5,7 +5,6 @@
 
 #include "dbmanager.h"
 
-
 /*---------  System Includes  -----------------*/
 
 #include <QComboBox>

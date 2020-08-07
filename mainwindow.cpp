@@ -1,20 +1,28 @@
+/*---------  Program Includes  ----------------*/
+
+#include "dbmanager.h"
 #include "mainwindow.h"
 #include "newtododialog.h"
 #include "ui_mainwindow.h"
-#include "dbmanager.h"
+
+/*---------  System Includes   ----------------*/
 
 #include <QComboBox>
 #include <QDate>
 #include <QDateEdit>
+#include <QMessageBox>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QPlainTextEdit>
-#include <QMessageBox>
 
 #include <iostream>
 #include <vector>
 
 
+/*---------  Public Methods    ----------------*/
+
+/*---------------------------------------------------------------------------
+*/
 MainWindow::MainWindow(QWidget *parent)
    : QMainWindow(parent)
    , ui(new Ui::MainWindow)
@@ -38,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
    showActiveTodos();
 }
 
+/*---------------------------------------------------------------------------
+*/
 MainWindow::~MainWindow()
 {
    QLayoutItem *child;
@@ -79,6 +89,9 @@ MainWindow::~MainWindow()
       mDbManager = nullptr;
    }
 }
+
+
+/*---------  Private Methods  -----------------*/
 
 /*---------------------------------------------------------------------------
 */

@@ -1,7 +1,16 @@
+/*---------  Program Includes  ----------------*/
+
 #include "mainwindow.h"
+
+/*---------  System Includes   ----------------*/
 
 #include <QApplication>
 
+
+/*---------  Public Methods    ----------------*/
+
+/*---------------------------------------------------------------------------
+*/
 int main(int argc, char *argv[])
 {
    QApplication a(argc, argv);

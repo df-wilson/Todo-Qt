@@ -1,4 +1,8 @@
+/*---------  Program Includes  ----------------*/
+
 #include "dbmanager.h"
+
+/*---------  System Includes   ----------------*/
 
 #include <QSqlError>
 #include <QSqlQuery>
@@ -6,6 +10,11 @@
 
 #include <vector>
 
+
+/*---------  Public Methods    ----------------*/
+
+/*---------------------------------------------------------------------------
+*/
 DbManager::DbManager(const QString &path)
 {
    mDb = QSqlDatabase::addDatabase("QSQLITE");
@@ -21,6 +30,8 @@ DbManager::DbManager(const QString &path)
    }
 }
 
+/*---------------------------------------------------------------------------
+*/
 DbManager::~DbManager()
 {
    if (mDb.isOpen())
@@ -29,6 +40,8 @@ DbManager::~DbManager()
    }
 }
 
+/*---------------------------------------------------------------------------
+*/
 bool DbManager::addTodoItem(const QString &text, QString &priority, QString &status, QString date)
 {
    bool success = false;
@@ -54,8 +67,8 @@ bool DbManager::addTodoItem(const QString &text, QString &priority, QString &sta
    return success;
 }
 
-
-
+/*---------------------------------------------------------------------------
+*/
 std::vector<DbManager::TodoItemData> DbManager::activeTodos()
 {
    std::vector<DbManager::TodoItemData> todos;
@@ -82,6 +95,8 @@ std::vector<DbManager::TodoItemData> DbManager::activeTodos()
    return todos;
 }
 
+/*---------------------------------------------------------------------------
+*/
 std::vector<DbManager::TodoItemData> DbManager::allTodos()
 {
    std::vector<DbManager::TodoItemData> todos;
@@ -182,6 +197,8 @@ bool DbManager::updateStatus(int todoId, const QString &status)
    return success;
 }
 
+/*---------------------------------------------------------------------------
+*/
 bool DbManager::isOpen() const
 {
       return mDb.isOpen();

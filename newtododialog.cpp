@@ -1,10 +1,18 @@
-#include <QString>
+/*---------  Program Includes  ----------------*/
 
+#include "dbmanager.h"
 #include "newtododialog.h"
 #include "ui_newtododialog.h"
 
-#include "dbmanager.h"
+/*---------  System Includes   ----------------*/
 
+#include <QString>
+
+
+/*---------  Public Methods    ----------------*/
+
+/*---------------------------------------------------------------------------
+*/
 NewTodoDialog::NewTodoDialog(QWidget *parent) :
    QDialog(parent),
    ui(new Ui::NewTodoDialog)
@@ -15,12 +23,19 @@ NewTodoDialog::NewTodoDialog(QWidget *parent) :
    mDbManager = new DbManager(mPath);
 }
 
+/*---------------------------------------------------------------------------
+*/
 NewTodoDialog::~NewTodoDialog()
 {
    delete ui;
    delete mDbManager;
 }
 
+
+/*---------  Private Methods  -----------------*/
+
+/*---------------------------------------------------------------------------
+*/
 void NewTodoDialog::on_addButton_clicked()
 {
    QString todoText = ui->plainTextEdit->document()->toPlainText();
@@ -37,6 +52,8 @@ void NewTodoDialog::on_addButton_clicked()
    ui->dueDateEdit->setDate(QDate::currentDate());
 }
 
+/*---------------------------------------------------------------------------
+*/
 void NewTodoDialog::on_doneButton_clicked()
 {
    accept();
