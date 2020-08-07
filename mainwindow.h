@@ -24,7 +24,7 @@ public:
 
 private slots:
    void on_newButton_clicked();
-   void on_showDone_stateChanged(int arg1);
+   void on_showDone_stateChanged(int state);
 
 private:
    Ui::MainWindow *ui;

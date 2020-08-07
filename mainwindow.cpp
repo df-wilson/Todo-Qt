@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QPlainTextEdit>
+#include <QMessageBox>
 
 #include <iostream>
 #include <vector>
@@ -34,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
 
    mDbManager = new DbManager(mPath);
 
-   showAllTodos();
+   showActiveTodos();
 }
 
 MainWindow::~MainWindow()
@@ -79,22 +80,40 @@ MainWindow::~MainWindow()
    }
 }
 
-
+/*---------------------------------------------------------------------------
+*/
 void MainWindow::on_newButton_clicked()
 {
-    NewTodoDialog dialog(this);
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        std::cout << "In on_newButton_clicked" << std::endl;
+   NewTodoDialog dialog(this);
+   if (dialog.exec() == QDialog::Accepted)
+   {
+      if(ui->showDone->isChecked())
+      {
         showAllTodos();
-    }
+      }
+      else
+      {
+         showActiveTodos();
+      }
+   }
 }
 
-void MainWindow::on_showDone_stateChanged(int arg1)
+/*---------------------------------------------------------------------------
+*/
+void MainWindow::on_showDone_stateChanged(int state)
 {
-
+   if(state)
+   {
+      showAllTodos();
+   }
+   else
+   {
+      showActiveTodos();
+   }
 }
 
+/*---------------------------------------------------------------------------
+*/
 QFrame *MainWindow::createNewTodoFrame(const DbManager::TodoItemData &todo)
 {
    mTodoFrames.push_back(std::unique_ptr<TodoFrame>(new TodoFrame(todo)));
@@ -102,25 +121,19 @@ QFrame *MainWindow::createNewTodoFrame(const DbManager::TodoItemData &todo)
    return mTodoFrames.back()->getFrame();
 }
 
+/*---------------------------------------------------------------------------
+*/
 void MainWindow::showActiveTodos()
 {
-
+   std::vector<DbManager::TodoItemData> todos = mDbManager->activeTodos();
+   drawSelectedTodos(todos);
 }
 
+/*---------------------------------------------------------------------------
+*/
 void MainWindow::showAllTodos()
 {
-   std::vector<DbManager::TodoItemData> todos;
-
-   if(mDbManager->isOpen())
-   {
-   std::cout << "In showAllTodos. Database open.";
-   }
-   else
-   {
-      std::cout << "In showAllTodos. Error opening database.";
-   }
-
-   todos = mDbManager->allTodos();
+   std::vector<DbManager::TodoItemData> todos = mDbManager->allTodos();
    drawSelectedTodos(todos);
 }
 
