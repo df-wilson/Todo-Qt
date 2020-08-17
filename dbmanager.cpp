@@ -149,6 +149,31 @@ bool DbManager::deleteTodo(int todoId)
 
 /*---------------------------------------------------------------------------
 */
+bool DbManager::updateDueDate(int todoId, const QString& dueAt)
+{
+   bool success = false;
+
+   QSqlQuery query;
+   query.prepare("UPDATE todos SET due_at = :dueAt WHERE id = :todoId");
+   query.bindValue(":dueAt", dueAt);
+   query.bindValue(":todoId", todoId);
+
+   if(query.exec())
+   {
+      success = true;
+   }
+   else
+   {
+      QString error = query.lastError().text();
+      qDebug() << "updatePriority error:"
+               << error;
+   }
+
+   return success;
+}
+
+/*---------------------------------------------------------------------------
+*/
 bool DbManager::updatePriority(int todoId, const QString &priority)
 {
    bool success = false;

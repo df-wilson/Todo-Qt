@@ -37,7 +37,7 @@ public:
    void setDescription(QString description);
    void setPriority(QString priority);
    void setStatus(QString status);
-   void setDate(QDate& dueAt);
+   void setDateColor(const QDate& dueAt);
 
 private:
 
@@ -74,6 +74,7 @@ private:
 
 private slots:
    void handleDeleteButtonClicked();
+   void on_dueDateEdit_userDateChanged(const QDate &date);
 };
 
 #endif // TODOFRAME_H

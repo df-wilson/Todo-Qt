@@ -29,6 +29,7 @@ public:
    std::vector<TodoItemData> activeTodos();
    std::vector<TodoItemData> allTodos();
    bool deleteTodo(int todoId);
+   bool updateDueDate(int todoId, const QString& dueAt);
    bool updatePriority(int todoId, const QString& priority);
    bool updateStatus(int todoId, const QString& status);
 
