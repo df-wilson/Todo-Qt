@@ -37,6 +37,7 @@ public:
    void setDescription(QString description);
    void setPriority(QString priority);
    void setStatus(QString status);
+   void setDate(QDate& dueAt);
 
 private:
 

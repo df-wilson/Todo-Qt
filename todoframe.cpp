@@ -47,6 +47,10 @@ TodoFrame::TodoFrame(const DbManager::TodoItemData &todo)
   // Create date widget
   QDate dueDateAt = QDate::fromString(todo.dueDate, "yyyy-MM-dd");
   mDateEdit = new QDateEdit(dueDateAt);
+  setDate(dueDateAt);
+
+
+  // Create the delete button
   mDeleteButton = new QPushButton("X");
   mDeleteButton->setStyleSheet("background-color: red");
   connect(mDeleteButton, SIGNAL (clicked()), this, SLOT (handleDeleteButtonClicked()));
@@ -147,6 +151,17 @@ void TodoFrame::setPriority(QString priority)
 void TodoFrame::setStatus(QString status)
 {
    mStatusComboBox->setCurrentIndex(statusStringToIndex(status));
+}
+
+void TodoFrame::setDate(QDate &dueDateAt)
+{
+   QDate currentDate = QDate::currentDate();
+
+   mDateEdit->setDate(dueDateAt);
+   if(currentDate >= dueDateAt)
+   {
+      mDateEdit->setStyleSheet("QDateEdit {color: red;}");
+   }
 }
 
 
